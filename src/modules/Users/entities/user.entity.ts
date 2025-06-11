@@ -7,7 +7,7 @@ export type UserDocument = HydratedDocument<User>
 @Schema({timestamps:true})
 export class User {
     @Prop({required: true})
-    username: string
+    fullName: string
 
     @Prop({required: true, unique:true })
     email: string
@@ -23,6 +23,8 @@ export class User {
 
     @Prop({default:false})
     is_superAdmin: boolean
+
+    _id?:string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

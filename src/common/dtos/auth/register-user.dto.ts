@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from "class-vali
 export class RegisterUserDto {
   @IsNotEmpty()
   @IsString()
-  username: string;
+  fullName: string;
 
   @IsNotEmpty()
   @IsEmail({}, { message: 'Invalid email format' })
