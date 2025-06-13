@@ -116,10 +116,10 @@ export class AuthService {
       if (user.is_verified) {
         throw new BadRequestException('Email is already verified.');
       }
-  
+      
       user.is_verified = true;
       await this.AuthRepository.save(user);
-  
+      console.log("in service fiele user after verification",user)
       return user;
     } catch (error) {
       throw new BadRequestException('Invalid or expired verification link.');

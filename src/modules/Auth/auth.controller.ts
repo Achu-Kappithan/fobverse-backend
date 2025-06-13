@@ -4,7 +4,6 @@ import { RegisterUserDto } from "src/common/dtos/auth/register-user.dto";
 import { ApiResponce } from "src/common/dtos/api-responce.dto";
 import { User, } from "../Users/entities/user.entity";
 import { ConfigService } from "@nestjs/config";
-import { Response } from "express";
 
 @Controller("auth")
 export class AuthController {
@@ -29,35 +28,54 @@ export class AuthController {
             throw new HttpException(
                 error.message || "User registration failed due to an unexpected error.",
                 HttpStatus.INTERNAL_SERVER_ERROR
-            );        
+            );
         }
     }
 
-    @Get('verify-email')
-    async verifyEmail(@Query('token') token: string, @Res() res: Response): Promise<void> {
-        const frontendUrl = this.configService.get<string>('app.frontendUrl');
+@Get('verify-email')
+async verifyEmail(@Query('token') token: string): Promise<ApiResponce<Partial<User>>> {
+    console.log("verfing email controller is working");
 
-        if (!token) {
-            return res.redirect(`${frontendUrl}/verification-failed?reason=missing_token`);
-        }
+    if (!token) {
+        throw new HttpException('Verification token is missing.', HttpStatus.BAD_REQUEST);
+    }
 
-        try {
-            await this.AuthService.verifyEmail(token);
-            return res.redirect(`${frontendUrl}/email-verification-success`);
-        } catch (error) {
-            console.error("Email verification error:", error);
-            let reason = 'unknown_error';
-            if (error instanceof HttpException) {
-                if (error.getStatus() === HttpStatus.BAD_REQUEST) {
-                    reason = 'invalid_or_expired'; 
-                    if (error.message.includes('already verified')) {
-                        reason = 'already_verified';
-                    }
-                } else if (error.getStatus() === HttpStatus.NOT_FOUND) {
-                    reason = 'user_not_found';
+    try {
+        const verfieduser = await this.AuthService.verifyEmail(token);
+        const responcedata: Partial<User> = {
+            _id: verfieduser._id,
+            email: verfieduser.email,
+            fullName: verfieduser.fullName,
+            is_verified: verfieduser.is_verified
+        };
+        console.log("Backend: About to send API Response.");
+        return new ApiResponce(true, "User Verified Successfully", HttpStatus.OK, responcedata);
+    } catch (error) {
+        console.error("Email verification error:", error);
+
+        let errorMessage = 'An unknown error occurred during email verification.';
+        let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        if (error instanceof HttpException) {
+            httpStatus = error.getStatus();
+            if (httpStatus === HttpStatus.BAD_REQUEST) {
+                if (error.message.includes('already verified')) {
+                    errorMessage = 'This email has already been verified.';
+                } else {
+                    errorMessage = 'Invalid or expired verification token.';
                 }
+            } else if (httpStatus === HttpStatus.NOT_FOUND) {
+                errorMessage = 'User not found for the provided token.';
+            } else {
+                errorMessage = error.message;
             }
-            return res.redirect(`${frontendUrl}/verification-failed?reason=${reason}`);
+        } else if (error instanceof Error) {
+            errorMessage = error.message;
+            httpStatus = HttpStatus.BAD_REQUEST;
         }
+
+        throw new HttpException(errorMessage, httpStatus);
     }
+}
+
 }

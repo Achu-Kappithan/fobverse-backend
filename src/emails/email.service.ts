@@ -42,16 +42,56 @@ export class EmailService {
   }
 
     async sendUserVerificationEmail(to: string, verificationjwt: string): Promise<void> {
-    const verificationLink = `${this.appBaseUrl}/auth/verify-email?token=${verificationjwt}`;
+    const verificationLink = `${this.frontendUrl}/email-verification?token=${verificationjwt}`;
     const subject = 'Verify Your Email Address for Your App Name';
     const htmlContent = `
-      <p>Hello,</p>
-      <p>Thank you for registering. Please click the link below to verify your email address:</p>
-      <p><a href="${verificationLink}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
-      <p>${verificationLink}"</P>
-      <p>This link will expire in 24 hours.</p>
-      <p>If you did not register for this account, please ignore this email.</p>
-    `;
+    <div style="background-color: #f3f4f6; padding: 20px; font-family: Arial, Helvetica, sans-serif;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; overflow: hidden;">
+            <tr>
+                <td style="padding: 20px; text-align: center; background-color: #7B3FE4;">
+                    <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Fobverse</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 40px 20px; text-align: center;">
+                    <h2 style="color: #1f2937; font-size: 20px; margin-bottom: 20px;">Verify Your Email Address</h2>
+                    <p style="color: #6b7280; font-size: 16px; margin-bottom: 20px;">
+                        Hello,
+                    </p>
+                    <p style="color: #6b7280; font-size: 16px; margin-bottom: 20px;">
+                        Thank you for registering with Fobverse. Please click the button below to verify your email address:
+                    </p>
+                    <p style="margin-bottom: 20px;">
+                        <a href="${verificationLink}" style="display: inline-block; padding: 12px 24px; background-color: #7B3FE4; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: 500;">
+                            Verify Email
+                        </a>
+                    </p>
+                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">
+                        If the button doesn't work, copy and paste this link into your browser:
+                        <br>
+                        <a href="${verificationLink}" style="color: #a78bfa; text-decoration: underline; word-break: break-all;">${verificationLink}</a>
+                    </p>
+                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">
+                        This link will expire in 24 hours.
+                    </p>
+                    <p style="color: #6b7280; font-size: 14px;">
+                        If you did not register for a Fobverse account, please ignore this email.
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 20px; text-align: center; background-color: #f3f4f6;">
+                    <p style="color: #6b7280; font-size: 12px; margin: 0;">
+                        © 2025 Fobverse. All rights reserved.
+                    </p>
+                    <p style="color: #6b7280; font-size: 12px; margin: 5px 0;">
+                        <a href="https://fobverse.com" style="color: #a78bfa; text-decoration: none;">Visit our website</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
+`;
     await this.sendEmail(to, subject, htmlContent);
   }
 
