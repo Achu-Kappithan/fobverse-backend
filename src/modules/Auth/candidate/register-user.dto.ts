@@ -20,3 +20,12 @@ export class RegisterUserDto {
   @IsString()
   googleId?: string;
 }
+
+export class CandidateLoginDto {
+  @IsEmail({},{message:'Invalid email format'})
+  email:string
+
+  @IsNotEmpty({message:'password cannot be empty'})
+  @MinLength(8,{message:'password must be at least 8 characters long'})
+  password:string
+}

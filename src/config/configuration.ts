@@ -20,5 +20,8 @@ export default ()=>({
 
     authSecret: process.env.JWT_AUTH_SECRET || 'ca34962aea35a47c58fce118d56d62e44a73f4b60dddaec69da5a713b37544e3',
     authExpiresIn: process.env.JWT_AUTH_EXPIRES_IN || '7d',
+
+    refreshSecret: process.env.JWT_REFRESH_SECRET || '2b94736eb52990e2f0d7c520e8ecd5bec9414f14f290a280b0c29e0568b0d1b3',
+    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d'
   }
 })

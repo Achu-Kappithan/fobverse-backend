@@ -24,7 +24,6 @@ export class EmailService {
     })
   }
 
-
   private async sendEmail(to:string, subject:string, htmlContent:string, from?:string): Promise<void> {
     const mailOptions = {
       from: from || `"FobVerse" <${this.senderEmail}>`,
@@ -42,7 +41,7 @@ export class EmailService {
   }
 
     async sendUserVerificationEmail(to: string, verificationjwt: string): Promise<void> {
-    const verificationLink = `${this.frontendUrl}/email-verification?token=${verificationjwt}`;
+    const verificationLink = `${this.frontendUrl}/email/verification?token=${verificationjwt}`;
     const subject = 'Verify Your Email Address for Your App Name';
     const htmlContent = `
     <div style="background-color: #f3f4f6; padding: 20px; font-family: Arial, Helvetica, sans-serif;">
